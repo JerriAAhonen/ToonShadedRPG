@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class PlayerAnimations : MonoBehaviour
 {
+	public AnimationClip attackAnimationClip;
+	public Collider weaponCollider;
 	private PlayerMovement pm;
 	private Animator anim;
 	
@@ -48,8 +50,31 @@ public class PlayerAnimations : MonoBehaviour
 		anim.Play("Run");
 	}
 
+	private Coroutine attackRoutine;
+	
 	private void OnAttack()
 	{
+		if (attackRoutine != null)
+		{
+			StopCoroutine(attackRoutine);
+		}
+		
+		attackRoutine = StartCoroutine(AttackRoutine());
+	}
+
+	private IEnumerator AttackRoutine()
+	{
 		anim.Play("Attack");
+		weaponCollider.enabled = true;
+
+		var attackDuration = attackAnimationClip.length;
+		while (attackDuration > 0)
+		{
+			attackDuration -= Time.deltaTime;
+			yield return null;
+		}
+
+		weaponCollider.enabled = false;
+		attackRoutine = null;
 	}
 }
