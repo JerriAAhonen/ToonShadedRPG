@@ -9,14 +9,15 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        pauseMenu.enabled = false;
+        if (pauseMenu != null)
+            pauseMenu.enabled = false;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (pauseMenu != null && Input.GetKeyDown(KeyCode.Escape))
         {
             // Pause the game
             var pauseMenuEnabled = !pauseMenu.enabled;
