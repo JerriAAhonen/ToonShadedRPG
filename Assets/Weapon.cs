@@ -14,6 +14,6 @@ public class Weapon : MonoBehaviour
             return;
 
         var forceDir = (other.transform.position - transform.position).normalized;
-        enemy.Rigidbody.AddForce(forceDir * hitForce);
+        enemy.TakeDamage(50, forceDir * hitForce);
     }
 }

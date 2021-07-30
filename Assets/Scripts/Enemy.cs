@@ -6,13 +6,26 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
 	private Rigidbody rb;
-	private List<Vector3> hitsReceived = new List<Vector3>();
+	private int maxHealth = 100;
+	private int health;
 
-	public Rigidbody Rigidbody => rb;
+	public bool Dead { get; set; }
 	
-	// Start is called before the first frame update
 	void Start()
 	{
 		rb = GetComponent<Rigidbody>();
+		Dead = false;
+		health = maxHealth;
+	}
+
+	public void TakeDamage(int amount, Vector3 hitForce)
+	{
+		Debug.Log("Ouch!");
+		health -= amount;
+		if (health <= 0)
+		{
+			Dead = true;
+			rb.AddForce(hitForce);
+		}
 	}
 }
