@@ -58,15 +58,30 @@ public class PlayerMovement : MonoBehaviour
 		
 		var moveDir = new Vector3(0f, verticalVel, 0f);
 		
+		// Point the player in the direction of the camera
+		if (InputHandler.Instance.IsAiming)
+		{
+			// Get the angle the camera is facing 
+			var targetAngle = cam.eulerAngles.y;
+			
+			// Smooth the transition between rotations
+			var angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref smoothVel, turnSmoothTime);
+			transform.rotation = Quaternion.Euler(0f, angle, 0f);
+		}
+		
 		if (dir.sqrMagnitude >= Mathf.Epsilon)
 		{
 			// Get the angle the player is facing 
 			var targetAngle = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
 			
-			// Smooth the transition between rotations
-			var angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref smoothVel, turnSmoothTime);
-			transform.rotation = Quaternion.Euler(0f, angle, 0f);
-			
+			// Only rotate the player if he is not aiming
+			if (!InputHandler.Instance.IsAiming)
+			{
+				// Smooth the transition between rotations
+				var angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref smoothVel, turnSmoothTime);
+				transform.rotation = Quaternion.Euler(0f, angle, 0f);
+			}
+
 			// Get the move dir from the direction the camera is looking at
 			moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
 			moveDir.y += verticalVel;
