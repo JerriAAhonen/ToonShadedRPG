@@ -20,15 +20,20 @@ public class CameraController : SingletonBehaviour<CameraController>
     private Vector3 camTransformPos;
     private LayerMask ignoreLayers;
     private Vector3 cameraFollowVelocity = Vector3.zero;
-    
-    private float defaultPos;
+
+    private float targetZPos;
+    private float defaultZPos;
     private float lookAngle;
     private float pivotAngle;
+
+    private float camSphereRadius = 0.2f;
+    private float camCollisionOffset = 0.2f;
+    private float minCollisionOffset = 0.2f;
 
     protected override void Awake()
     {
         base.Awake();
-        defaultPos = camTransform.localPosition.z;
+        defaultZPos = camTransform.localPosition.z;
         ignoreLayers = ~(1 << 8 | 1 << 9 | 1 << 10);
     }
 
@@ -37,6 +42,7 @@ public class CameraController : SingletonBehaviour<CameraController>
         var delta = Time.deltaTime;
         FollowTarget(delta);
         HandleCameraRotation(delta, Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));
+        HandleCameraCollisions(delta);
     }
 
     private void FollowTarget(float delta)
@@ -65,5 +71,31 @@ public class CameraController : SingletonBehaviour<CameraController>
 
         targetRotation = Quaternion.Euler(rotation);
         camPivotTransform.localRotation = targetRotation;
+    }
+
+    private void HandleCameraCollisions(float delta)
+    {
+        targetZPos = defaultZPos;
+        RaycastHit hit;
+        var direction = camTransform.position - camPivotTransform.position;
+        direction.Normalize();
+
+        if (Physics.SphereCast(
+            camPivotTransform.position,
+            camSphereRadius,
+            direction,
+            out hit,
+            Mathf.Abs(targetZPos),
+            ignoreLayers))
+        {
+            var distance = Vector3.Distance(camPivotTransform.position, hit.point);
+            targetZPos = -(distance - camCollisionOffset);
+        }
+
+        if (Mathf.Abs(targetZPos) < minCollisionOffset)
+            targetZPos = -minCollisionOffset;
+
+        camTransformPos.z = Mathf.Lerp(camTransform.localPosition.z, targetZPos, delta / 0.2f);
+        camTransform.localPosition = camTransformPos;
     }
 }
