@@ -2,8 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Util;
 
-public class PlayerAnimations : MonoBehaviour
+public class PlayerAnimations : SingletonBehaviour<PlayerAnimations>
 {
 	public AnimationClip attackAnimationClip;
 	public Collider weaponCollider;
@@ -13,6 +14,8 @@ public class PlayerAnimations : MonoBehaviour
 	private static readonly int Walking = Animator.StringToHash("Walking");
 	private static readonly int Running = Animator.StringToHash("Running");
 
+	public float AttackAnimationLenght => attackAnimationClip.length;
+
 	private void Start()
 	{
 		pm = GetComponent<PlayerMovement>();
@@ -21,13 +24,8 @@ public class PlayerAnimations : MonoBehaviour
 		pm.BecameIdle += OnBecameIdle;
 		pm.StartedWalking += OnStartedWalking;
 		pm.StartedRunning += OnStartedRunning;
-	}
 
-	private void Update()
-	{
-		// Move this to the attack controller script
-		if (Input.GetMouseButtonDown(0))
-			OnAttack();
+		InputHandler.Instance.Attack += OnAttack;
 	}
 
 	private void OnBecameIdle()
@@ -67,7 +65,7 @@ public class PlayerAnimations : MonoBehaviour
 		anim.Play("Attack");
 		weaponCollider.enabled = true;
 
-		var attackDuration = attackAnimationClip.length;
+		var attackDuration = AttackAnimationLenght;
 		while (attackDuration > 0)
 		{
 			attackDuration -= Time.deltaTime;
