@@ -7,6 +7,8 @@ public class InteractableTree : MonoBehaviour
 	private Rigidbody rb;
 	private int maxHealth = 100;
 	private int health;
+
+	private Coroutine shakeRoutine;
 	
 	private void Start()
 	{
@@ -20,7 +22,9 @@ public class InteractableTree : MonoBehaviour
 		health -= 30;
 		if (health > 0)
 		{
-			StartCoroutine(ShakeRoutine());
+			if (shakeRoutine != null)
+				StopCoroutine(shakeRoutine);
+			shakeRoutine = StartCoroutine(ShakeRoutine());
 			return;   
 		}
 		
@@ -30,6 +34,16 @@ public class InteractableTree : MonoBehaviour
 
 	private IEnumerator ShakeRoutine()
 	{
+		var dur = 0.5f;
+		while (dur > 0f)
+		{
+			dur -= Time.deltaTime;
+			var xRot = Random.Range(-0.5f, 0.5f);
+			var zRot = Random.Range(-0.5f, 0.5f);
+			transform.rotation = Quaternion.Euler(xRot, 0f, zRot);
+			yield return null;
+		}
 		
+		transform.rotation = Quaternion.Euler(0f, 0f, 0f);
 	}
 }
