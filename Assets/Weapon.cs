@@ -10,10 +10,23 @@ public class Weapon : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         var enemy = other.GetComponent<Enemy>();
-        if (enemy == null)
-            return;
+        if (enemy != null)
+            HitEnemy(enemy);
 
-        var forceDir = (other.transform.position - transform.position).normalized;
+        var tree = other.GetComponent<InteractableTree>();
+        if (tree != null)
+            HitTree(tree);
+    }
+
+    private void HitEnemy(Enemy enemy)
+    {
+        var forceDir = (enemy.transform.position - transform.position).normalized;
         enemy.TakeDamage(50, forceDir * hitForce);
+    }
+
+    private void HitTree(InteractableTree tree)
+    {
+        var forceDir = (tree.transform.position - transform.position).normalized;
+        tree.Cut(forceDir * hitForce);
     }
 }
