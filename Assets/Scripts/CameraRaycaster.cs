@@ -16,7 +16,7 @@ public class CameraRaycaster : MonoBehaviour
 			var interactable = hit.collider.GetComponent<Interactable>();
 			if (interactable != null)
 			{
-				CrosshairTooltips.Instance.ShowTargetDisplayName(interactable.DisplayName);
+				CrosshairTooltips.Instance.ShowTargetDisplayName(interactable.DisplayName, interactable.CanInteract, interactable.InteractionText);
 				tooltipActive = true;
 			}
 		}

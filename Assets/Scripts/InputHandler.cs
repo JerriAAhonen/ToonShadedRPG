@@ -6,6 +6,8 @@ using Util;
 
 public class InputHandler : SingletonBehaviour<InputHandler>
 {
+	public KeyCode InteractionKey { get; } = KeyCode.E;
+	
 	public bool IsAttacking { get; private set; }
 	public bool IsAiming { get; private set; }
 

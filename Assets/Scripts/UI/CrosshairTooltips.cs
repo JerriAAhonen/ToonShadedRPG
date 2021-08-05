@@ -15,10 +15,17 @@ public class CrosshairTooltips : SingletonBehaviour<CrosshairTooltips>
 		Hide();
 	}
 
-	public void ShowTargetDisplayName(string text)
+	public void ShowTargetDisplayName(string text, bool canInteract, string interactionText)
 	{
 		targetDisplayName.text = text;
 		targetDisplayName.gameObject.SetActive(true);
+
+		if (canInteract)
+		{
+			var interactionKey = InputHandler.Instance.InteractionKey;
+			interactionTooltip.text = $"[{interactionKey.ToString()} {interactionText}]";
+			interactionTooltip.gameObject.SetActive(true);
+		}
 	}
 
 	public void Hide()

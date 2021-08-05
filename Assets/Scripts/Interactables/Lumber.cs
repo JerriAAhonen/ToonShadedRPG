@@ -7,4 +7,5 @@ using UnityEngine;
 public class Lumber : Interactable
 {
 	public override string DisplayName { get; } = "Wood";
+	public override string InteractionText { get; } = "Collect";
 }
