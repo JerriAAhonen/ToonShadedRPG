@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class InteractableTree : MonoBehaviour
 {
+	public GameObject trunk;
+	public List<GameObject> pieces;
+	
 	private Rigidbody rb;
 	private int maxHealth = 100;
 	private int health;
@@ -15,6 +18,11 @@ public class InteractableTree : MonoBehaviour
 		rb = GetComponent<Rigidbody>();
 		rb.constraints = RigidbodyConstraints.FreezeAll;
 		health = maxHealth;
+
+		foreach (var piece in pieces)
+		{
+			piece.SetActive(false);
+		}
 	}
 
 	public void Cut(Vector3 hitForce)
@@ -30,6 +38,18 @@ public class InteractableTree : MonoBehaviour
 		
 		rb.constraints = RigidbodyConstraints.None;
 		rb.AddForce(hitForce);
+
+		LeanTween.delayedCall(3f, () =>
+		{
+			trunk.SetActive(false);
+			LeanTween.delayedCall(0.1f, () =>
+			{
+				foreach (var piece in pieces)
+				{
+					piece.SetActive(true);
+				}
+			});
+		});
 	}
 
 	private IEnumerator ShakeRoutine()
