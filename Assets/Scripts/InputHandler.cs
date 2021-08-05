@@ -12,6 +12,7 @@ public class InputHandler : SingletonBehaviour<InputHandler>
 	public bool IsAiming { get; private set; }
 
 	public event Action Attack;
+	public event Action Interact;
 
 	private void Update()
 	{
@@ -21,6 +22,12 @@ public class InputHandler : SingletonBehaviour<InputHandler>
 			IsAttacking = true;
 			LeanTween.cancel(gameObject, false);
 			LeanTween.delayedCall(gameObject, PlayerAnimations.Instance.AttackAnimationLenght, () => IsAttacking = false);
+		}
+
+		if (Input.GetKeyDown(KeyCode.E))
+		{
+			Debug.Log("interact");
+			Interact?.Invoke();
 		}
 
 		IsAiming = Input.GetMouseButton(1);
