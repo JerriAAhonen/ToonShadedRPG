@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class CameraRaycaster : MonoBehaviour
 {
+	public LayerMask ignoreInBuildingMode;
+	public GameObject testBuildingPrefab;
+	private GameObject testBuilding;
+
 	private bool tooltipActive;
 	private float reachDistance = 10f;
 
@@ -18,24 +22,37 @@ public class CameraRaycaster : MonoBehaviour
 	private void Update()
 	{
 		var ray = new Ray(transform.position, transform.forward);
-		if (Physics.Raycast(ray, out var hit, reachDistance))
+		if (InputHandler.Instance.InBuildingMode)
 		{
-			var interactable = hit.collider.GetComponent<Interactable>();
-			if (interactable != null)
+			if (Physics.Raycast(ray, out var hit, 30f, ~ignoreInBuildingMode))
 			{
-				CrosshairTooltips.Instance.ShowTargetDisplayName(interactable.DisplayName, interactable.CanInteract, interactable.InteractionText);
-				tooltipActive = true;
+				if (testBuilding == null)
+					testBuilding = Instantiate(testBuildingPrefab);
 
-				targetedInteractable = interactable;
+				testBuilding.transform.position = hit.point;
 			}
-			else 
-				targetedInteractable = null;
 		}
-		else if (tooltipActive)
-		{ 
-			CrosshairTooltips.Instance.Hide(); 
-			tooltipActive = false;
-			targetedInteractable = null;
+		else
+		{
+			if (Physics.Raycast(ray, out var hit, reachDistance))
+			{
+				var interactable = hit.collider.GetComponent<Interactable>();
+				if (interactable != null)
+				{
+					CrosshairTooltips.Instance.ShowTargetDisplayName(interactable.DisplayName, interactable.CanInteract, interactable.InteractionText);
+					tooltipActive = true;
+
+					targetedInteractable = interactable;
+				}
+				else 
+					targetedInteractable = null;
+			}
+			else if (tooltipActive)
+			{ 
+				CrosshairTooltips.Instance.Hide(); 
+				tooltipActive = false;
+				targetedInteractable = null;
+			}
 		}
 	}
 

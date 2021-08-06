@@ -10,9 +10,11 @@ public class InputHandler : SingletonBehaviour<InputHandler>
 	
 	public bool IsAttacking { get; private set; }
 	public bool IsAiming { get; private set; }
+	public bool InBuildingMode { get; private set; }
 
 	public event Action Attack;
 	public event Action Interact;
+	public event Action<bool> BuildModeToggle;
 
 	private void Update()
 	{
@@ -28,6 +30,12 @@ public class InputHandler : SingletonBehaviour<InputHandler>
 		{
 			Debug.Log("interact");
 			Interact?.Invoke();
+		}
+
+		if (Input.GetKeyDown(KeyCode.B))
+		{
+			InBuildingMode = !InBuildingMode;
+			BuildModeToggle?.Invoke(InBuildingMode);
 		}
 
 		IsAiming = Input.GetMouseButton(1);
