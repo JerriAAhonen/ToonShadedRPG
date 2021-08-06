@@ -15,15 +15,23 @@ public class InputHandler : SingletonBehaviour<InputHandler>
 	public event Action Attack;
 	public event Action Interact;
 	public event Action<bool> BuildModeToggle;
+	public event Action PlaceBuilding;
 
 	private void Update()
 	{
 		if (Input.GetMouseButtonDown(0))
 		{
-			Attack?.Invoke();
-			IsAttacking = true;
-			LeanTween.cancel(gameObject, false);
-			LeanTween.delayedCall(gameObject, PlayerAnimations.Instance.AttackAnimationLenght, () => IsAttacking = false);
+			if (InBuildingMode)
+			{
+				PlaceBuilding?.Invoke();
+			}
+			else
+			{
+				Attack?.Invoke();
+				IsAttacking = true;
+				LeanTween.cancel(gameObject, false);
+				LeanTween.delayedCall(gameObject, PlayerAnimations.Instance.AttackAnimationLenght, () => IsAttacking = false);
+			}
 		}
 
 		if (Input.GetKeyDown(KeyCode.E))

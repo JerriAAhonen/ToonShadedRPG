@@ -17,6 +17,7 @@ public class CameraRaycaster : MonoBehaviour
 	private void Start()
 	{
 		InputHandler.Instance.Interact += TryInteract;
+		InputHandler.Instance.PlaceBuilding += TryPlaceBuilding;
 	}
 
 	private void Update()
@@ -62,6 +63,11 @@ public class CameraRaycaster : MonoBehaviour
 			return;
 		
 		targetedInteractable.Interact();
+	}
+
+	private void TryPlaceBuilding()
+	{
+		testBuilding = null;
 	}
 
 	private void OnDrawGizmos()

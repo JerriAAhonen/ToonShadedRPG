@@ -1705,7 +1705,7 @@ PrefabInstance:
     - target: {fileID: 3897638777907723187, guid: dacf555edd2b449c6854f31338c18366,
         type: 3}
       propertyPath: ignoreInBuildingMode.m_Bits
-      value: 2048
+      value: 2304
       objectReference: {fileID: 0}
     - target: {fileID: 8602479368811432019, guid: dacf555edd2b449c6854f31338c18366,
         type: 3}
