@@ -2,37 +2,34 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Util;
 
-public class CameraRaycaster : MonoBehaviour
+public class CameraRaycaster : SingletonBehaviour<CameraRaycaster>
 {
 	public LayerMask ignoreInBuildingMode;
-	public GameObject testBuildingPrefab;
-	private GameObject testBuilding;
 
 	private bool tooltipActive;
 	private float reachDistance = 10f;
 
 	private Interactable targetedInteractable;
-
-	private void Start()
-	{
-		InputHandler.Instance.Interact += TryInteract;
-		InputHandler.Instance.PlaceBuilding += TryPlaceBuilding;
-	}
+	
+	public Vector3 BuildPos { get; private set; }
 
 	private void Update()
 	{
 		var ray = new Ray(transform.position, transform.forward);
+		
+		//----------------------
+		//-- BUILD MODE
 		if (InputHandler.Instance.InBuildingMode)
 		{
 			if (Physics.Raycast(ray, out var hit, 30f, ~ignoreInBuildingMode))
 			{
-				if (testBuilding == null)
-					testBuilding = Instantiate(testBuildingPrefab);
-
-				testBuilding.transform.position = hit.point;
+				BuildPos = hit.point;
 			}
 		}
+		//----------------------
+		//-- INTERACTION
 		else
 		{
 			if (Physics.Raycast(ray, out var hit, reachDistance))
@@ -63,11 +60,6 @@ public class CameraRaycaster : MonoBehaviour
 			return;
 		
 		targetedInteractable.Interact();
-	}
-
-	private void TryPlaceBuilding()
-	{
-		testBuilding = null;
 	}
 
 	private void OnDrawGizmos()

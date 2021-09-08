@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class BuildMenu : MonoBehaviour
+public class BuildMenuUI : MonoBehaviour
 {
 	public TextMeshProUGUI buildModeIndicator;
 
