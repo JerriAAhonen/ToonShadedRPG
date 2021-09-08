@@ -13,7 +13,7 @@ public class CameraRaycaster : SingletonBehaviour<CameraRaycaster>
 
 	private Interactable targetedInteractable;
 	
-	public Vector3 BuildPos { get; private set; }
+	public (RaycastHit hit, BuildMenuStructure structure) BuildPos { get; private set; }
 
 	private void Update()
 	{
@@ -25,7 +25,14 @@ public class CameraRaycaster : SingletonBehaviour<CameraRaycaster>
 		{
 			if (Physics.Raycast(ray, out var hit, 30f, ~ignoreInBuildingMode))
 			{
-				BuildPos = hit.point;
+				if (hit.transform.gameObject.layer == LayerMask.NameToLayer("PlayerBuiltStructure"))
+				{
+					var structure = hit.collider.GetComponent<BuildMenuStructure>();
+					if (structure != null)
+						BuildPos = (hit, structure);
+				}
+				else
+					BuildPos = (hit, null);
 			}
 		}
 		//----------------------

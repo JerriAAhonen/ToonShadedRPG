@@ -8,9 +8,9 @@ public class BuildMenu : SingletonBehaviour<BuildMenu>
 {
 	public LayerMask playerBuiltStructures;
 	public List<BuildMenuStructure> structures;
-	private BuildMenuStructure activeStructure;
+	private BuildMenuStructure previewStructure;
 	private bool active;
-	private RaycastHit[] hits;
+	private RaycastHit[] hits = new RaycastHit[100];
 
 	private void Start()
 	{
@@ -24,36 +24,70 @@ public class BuildMenu : SingletonBehaviour<BuildMenu>
 		if (!active)
 			return;
 
-		if (activeStructure == null)
-			activeStructure = Instantiate(structures.First());
+		if (previewStructure == null)
+			previewStructure = Instantiate(structures.First());
 
 		var buildPos = CameraRaycaster.Instance.BuildPos;
-		var hitsCount = Physics.SphereCastNonAlloc(buildPos, 1f, Vector3.up, hits, Mathf.Infinity, playerBuiltStructures);
-		if (hitsCount > 0)
+		if (buildPos.structure != null)
 		{
-			
+			previewStructure.transform.position =
+				CalculateOppositeFacingSnappingPoint(buildPos.structure, previewStructure, buildPos.hit);
 		}
 		else
 		{
-			var defaultStructurePos = activeStructure.GetDefaultSnapPoint();
-			var originToSnapPointDelta = defaultStructurePos - activeStructure.transform.position;
-			activeStructure.transform.position = CameraRaycaster.Instance.BuildPos - originToSnapPointDelta;
+			previewStructure.transform.position = CalculateDefaultSnapPointPlacement(previewStructure, buildPos.hit.point);
 		}
+	}
+
+	private Vector3 CalculateDefaultSnapPointPlacement(BuildMenuStructure structure, Vector3 buildPos)
+	{
+		var activeStructurePos = structure.transform.position;
+		var defaultStructurePos = structure.GetDefaultSnapPoint();
+		var originToSnapPointDelta = defaultStructurePos - activeStructurePos;
+		return buildPos - originToSnapPointDelta;
+	}
+
+	private Vector3 CalculateOppositeFacingSnappingPoint(
+		BuildMenuStructure targetedStructure, 
+		BuildMenuStructure newStructure, 
+		RaycastHit hit)
+	{
+		var biggestAngle = 0f;
+		Transform result = null;
+		foreach (var snapPoint in newStructure.snapPoints)
+		{
+			var angle = Vector3.Angle(hit.normal, snapPoint.forward);
+			if (angle > biggestAngle)
+			{
+				biggestAngle = angle;
+				result = snapPoint;
+			}
+		}
+
+		if (result == null)
+			result = newStructure.snapPoints[0];
+
+		var closestSnappingPointOnTargetedStructure = targetedStructure.GetClosestSnapPoint(hit.point);
+		var buildPosToNewStructureOrigin = newStructure.transform.position - hit.point;
+		var buildPosToNewStructureSnap = result.position - buildPosToNewStructureOrigin;
+		var buildPosToTargetStructureSnap = closestSnappingPointOnTargetedStructure - buildPosToNewStructureSnap;
+		
+		return hit.point + buildPosToTargetStructureSnap;
 	}
 
 	private void TryPlaceStructure()
 	{
-		activeStructure.gameObject.layer = LayerMask.NameToLayer("PlayerBuiltStructure");
-		activeStructure = null;
+		previewStructure.gameObject.layer = LayerMask.NameToLayer("PlayerBuiltStructure");
+		previewStructure = null;
 	}
 
 	private void OnBuildModeToggle(bool activate)
 	{
 		active = activate;
-		if (!activate && activeStructure != null)
+		if (!activate && previewStructure != null)
 		{
-			Destroy(activeStructure.gameObject);
-			activeStructure = null;
+			Destroy(previewStructure.gameObject);
+			previewStructure = null;
 		}
 	}
 }
