@@ -6,11 +6,10 @@ using Util;
 
 public class BuildMenu : SingletonBehaviour<BuildMenu>
 {
-	public LayerMask playerBuiltStructures;
 	public List<BuildMenuStructure> structures;
 	private BuildMenuStructure previewStructure;
 	private bool active;
-	private RaycastHit[] hits = new RaycastHit[100];
+	private int structureIndex;
 
 	private void Start()
 	{
@@ -24,18 +23,57 @@ public class BuildMenu : SingletonBehaviour<BuildMenu>
 		if (!active)
 			return;
 
-		if (previewStructure == null)
-			previewStructure = Instantiate(structures.First());
+		SetPreview();
+		ChangePreview();
+		UpdatePreview();
+		HandleRotation();
+	}
 
-		var buildPos = CameraRaycaster.Instance.BuildPos;
-		if (buildPos.structure != null)
+	private void SetPreview()
+	{
+		if (previewStructure == null)
+			previewStructure = Instantiate(structures[structureIndex]);
+	}
+
+	private void ChangePreview()
+	{
+		if (Input.GetKeyDown(KeyCode.Alpha1))
 		{
-			previewStructure.transform.position =
-				CalculateOppositeFacingSnappingPoint(buildPos.structure, previewStructure, buildPos.hit);
+			structureIndex = 0;
+			DeletePreview();
 		}
-		else
+		else if (Input.GetKeyDown(KeyCode.Alpha2))
 		{
-			previewStructure.transform.position = CalculateDefaultSnapPointPlacement(previewStructure, buildPos.hit.point);
+			structureIndex = 1;
+			DeletePreview();
+		}
+		else if (Input.GetKeyDown(KeyCode.Alpha3))
+		{
+			structureIndex = 2;
+			DeletePreview();
+		}
+	}
+
+	private void UpdatePreview()
+	{
+		if (previewStructure == null)
+			return;
+		
+		var buildPos = CameraRaycaster.Instance.BuildPos;
+		previewStructure.transform.position = buildPos.structure != null 
+			? CalculateOppositeFacingSnappingPoint(buildPos.structure, previewStructure, buildPos.hit) 
+			: CalculateDefaultSnapPointPlacement(previewStructure, buildPos.hit.point);
+	}
+
+	private void HandleRotation()
+	{
+		if (Input.GetAxis("Mouse ScrollWheel") > 0)
+		{
+			previewStructure.transform.Rotate(Vector3.up, 22.5f);
+		}
+		else if (Input.GetAxis("Mouse ScrollWheel") < 0)
+		{
+			previewStructure.transform.Rotate(Vector3.up, -22.5f);
 		}
 	}
 
@@ -85,9 +123,12 @@ public class BuildMenu : SingletonBehaviour<BuildMenu>
 	{
 		active = activate;
 		if (!activate && previewStructure != null)
-		{
-			Destroy(previewStructure.gameObject);
-			previewStructure = null;
-		}
+			DeletePreview();
+	}
+
+	private void DeletePreview()
+	{
+		Destroy(previewStructure.gameObject);
+		previewStructure = null;
 	}
 }
