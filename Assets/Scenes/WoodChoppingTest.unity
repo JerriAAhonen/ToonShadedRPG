@@ -1299,11 +1299,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a892a5e5a0cc4378ad4574762ef438f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerBuiltStructures:
-    serializedVersion: 2
-    m_Bits: 4096
   structures:
   - {fileID: 8663980180870126328, guid: 708817533caae418f9e4e1543bc0e518, type: 3}
+  - {fileID: 8663980180870126328, guid: edddaa3cf983a44288996beedbfba3f4, type: 3}
+  - {fileID: 8663980180870126328, guid: 56ba815e9093a430d94ba8bb35c57b8c, type: 3}
 --- !u!1 &1310574281
 GameObject:
   m_ObjectHideFlags: 0
