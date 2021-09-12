@@ -7,6 +7,21 @@ public class BuildMenuStructure : MonoBehaviour
 {
 	public List<Transform> snapPoints;
 	private Transform defaultSnapPoint;
+	private Vector3 offsetFromDefaultSnapPointToOrigin;
+
+	public Vector3 DefaultSnapToOriginOffset
+	{
+		get
+		{
+			if (defaultSnapPoint == null)
+				GetDefaultSnapPoint();
+
+			if (offsetFromDefaultSnapPointToOrigin == Vector3.zero)
+				offsetFromDefaultSnapPointToOrigin = transform.position - defaultSnapPoint.position;
+
+			return offsetFromDefaultSnapPointToOrigin;
+		}
+	}
 
 	public Vector3 GetClosestSnapPoint(Vector3 buildPos)
 	{
