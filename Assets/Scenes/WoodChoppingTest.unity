@@ -1302,7 +1302,9 @@ MonoBehaviour:
   structures:
   - {fileID: 8663980180870126328, guid: 708817533caae418f9e4e1543bc0e518, type: 3}
   - {fileID: 8663980180870126328, guid: edddaa3cf983a44288996beedbfba3f4, type: 3}
+  - {fileID: 8663980180870126328, guid: 9a1d04557408940ec84c767daa19e304, type: 3}
   - {fileID: 8663980180870126328, guid: 56ba815e9093a430d94ba8bb35c57b8c, type: 3}
+  - {fileID: 8663980180870126328, guid: 10519c0a4eb7f42aeac19442d7e1871c, type: 3}
 --- !u!1 &1310574281
 GameObject:
   m_ObjectHideFlags: 0

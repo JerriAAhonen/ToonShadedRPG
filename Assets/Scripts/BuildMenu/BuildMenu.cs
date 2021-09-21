@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Util;
 
@@ -15,6 +13,7 @@ public class BuildMenu : SingletonBehaviour<BuildMenu>
 	{
 		InputHandler.Instance.BuildModeToggle += OnBuildModeToggle;
 		InputHandler.Instance.PlaceBuilding += TryPlaceStructure;
+		InputHandler.Instance.PreviewIndexChanged += OnChangePreview;
 		active = InputHandler.Instance.InBuildingMode;
 	}
 
@@ -24,7 +23,6 @@ public class BuildMenu : SingletonBehaviour<BuildMenu>
 			return;
 
 		SetPreview();
-		ChangePreview();
 		MovePreview();
 		HandleRotation();
 	}
@@ -35,23 +33,13 @@ public class BuildMenu : SingletonBehaviour<BuildMenu>
 			previewStructure = Instantiate(structures[structureIndex]);
 	}
 
-	private void ChangePreview()
+	private void OnChangePreview(int newIndex)
 	{
-		if (Input.GetKeyDown(KeyCode.Alpha1))
-		{
-			structureIndex = 0;
-			DeletePreview();
-		}
-		else if (Input.GetKeyDown(KeyCode.Alpha2))
-		{
-			structureIndex = 1;
-			DeletePreview();
-		}
-		else if (Input.GetKeyDown(KeyCode.Alpha3))
-		{
-			structureIndex = 2;
-			DeletePreview();
-		}
+		if (!active)
+			return;
+
+		structureIndex = Mathf.Clamp(newIndex, 0, 9);
+		DeletePreview();
 	}
 
 	private void MovePreview()
@@ -64,16 +52,9 @@ public class BuildMenu : SingletonBehaviour<BuildMenu>
 		{
 			drawDebugSphere = true;
 			var sphereCastPos = buildPos.hit.point + previewStructure.DefaultSnapToOriginOffset;
-			if (GetClosestStructure(sphereCastPos, out var structure, out var hit))
-			{
-				previewStructure.transform.position =
-					CalculateOppositeFacingSnappingPoint(structure, previewStructure, hit);
-			}
-			else
-			{
-				previewStructure.transform.position = 
-					CalculateDefaultSnapPointPlacement(previewStructure, buildPos.hit.point);
-			}
+			previewStructure.transform.position = GetClosestStructure(sphereCastPos, out var structure, out var hit) 
+					? CalculateOppositeFacingSnappingPoint(structure, previewStructure, hit) 
+					: CalculateDefaultSnapPointPlacement(previewStructure, buildPos.hit.point);
 		}
 		else
 		{
