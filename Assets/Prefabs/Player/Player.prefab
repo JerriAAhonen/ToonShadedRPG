@@ -90,6 +90,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitForce: 10000
+  col: {fileID: 2781131993448263374}
   hitEffect: {fileID: 2383495650150890250, guid: 0d254e331ad4e854087134a17a03fd5a,
     type: 3}
 --- !u!1 &2781131994035531370
@@ -370,7 +371,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackAnimationClip: {fileID: 7400000, guid: 8048b118dfd4d2944915d16375ae7374, type: 2}
-  weaponCollider: {fileID: 2781131993448263374}
+  weapon: {fileID: 5080181045839095421}
 --- !u!114 &6295909912911043410
 MonoBehaviour:
   m_ObjectHideFlags: 0

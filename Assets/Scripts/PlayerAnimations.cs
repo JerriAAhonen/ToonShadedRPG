@@ -6,8 +6,7 @@ using Util;
 
 public class PlayerAnimations : SingletonBehaviour<PlayerAnimations>
 {
-	public AnimationClip attackAnimationClip;
-	public Collider weaponCollider;
+	public Weapon weapon;
 	private PlayerMovement pm;
 	private Animator anim;
 	
@@ -26,6 +25,8 @@ public class PlayerAnimations : SingletonBehaviour<PlayerAnimations>
 		pm.StartedRunning += OnStartedRunning;
 
 		InputHandler.Instance.Attack += OnAttack;
+
+		weapon.ColliderEnabled = false;
 	}
 
 	private void OnBecameIdle()
@@ -54,7 +55,7 @@ public class PlayerAnimations : SingletonBehaviour<PlayerAnimations>
 	{
 		if (attackRoutine != null)
 		{
-			StopCoroutine(attackRoutine);
+			return;
 		}
 		
 		attackRoutine = StartCoroutine(AttackRoutine());
@@ -63,7 +64,7 @@ public class PlayerAnimations : SingletonBehaviour<PlayerAnimations>
 	private IEnumerator AttackRoutine()
 	{
 		anim.Play("Attack");
-		weaponCollider.enabled = true;
+		weapon.ColliderEnabled = true;
 
 		var attackDuration = AttackAnimationLenght;
 		while (attackDuration > 0)
@@ -72,7 +73,7 @@ public class PlayerAnimations : SingletonBehaviour<PlayerAnimations>
 			yield return null;
 		}
 
-		weaponCollider.enabled = false;
+		weapon.ColliderEnabled = false;
 		attackRoutine = null;
 	}
 }
