@@ -21,6 +21,7 @@ public class Weapon : MonoBehaviour
     private void HitEnemy(Enemy enemy)
     {
         var forceDir = (enemy.transform.position - transform.position).normalized;
+        forceDir += Vector3.up * 1f;
         enemy.TakeDamage(50, forceDir * hitForce);
     }
 

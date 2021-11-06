@@ -69,6 +69,7 @@ public class Enemy : MonoBehaviour
 		{
 			Debug.Log($"{name} died");
 			Dead = true;
+			anim.enabled = false;
 			rb.constraints = RigidbodyConstraints.None;
 			rb.AddForce(hitForce);
 		}
