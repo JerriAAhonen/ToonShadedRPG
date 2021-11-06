@@ -9,11 +9,10 @@ public class Enemy : MonoBehaviour
 	private Animator anim;
 	private int maxHealth = 100;
 	private int health;
+	private float movementSpeed = 2.5f;
 	private bool isAttacking;
 
-	private static readonly int Idle = Animator.StringToHash("Idle");
 	private static readonly int Walking = Animator.StringToHash("Walking");
-	private static readonly int Attacking = Animator.StringToHash("Attacking");
 	
 	public bool Dead { get; set; }
 	
@@ -23,18 +22,23 @@ public class Enemy : MonoBehaviour
 		anim = GetComponent<Animator>();
 		Dead = false;
 		health = maxHealth;
+		rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
 	}
 
 	private void FixedUpdate()
 	{
+		if (Dead)
+			return;
+		
 		var playerTransform = GetPlayer().transform;
 		var dir = playerTransform.position - transform.position;
-		var distance = dir.sqrMagnitude;
+		var distance = Vector3.Distance(playerTransform.position, transform.position);
 
-		if (distance < 2f)
+		if (distance < 5f)
 		{
 			anim.SetBool(Walking, false);
-			anim.SetBool(Attacking, true);
+			return;
+			anim.SetBool(Walking, false);
 			if (!isAttacking)
 				StartCoroutine(AttackRoutine());
 			return;
@@ -45,27 +49,27 @@ public class Enemy : MonoBehaviour
 		if (distance > 100f)
 		{
 			anim.SetBool(Walking, false);
-			anim.SetBool(Attacking, false);
-			anim.Play("Idle");
 			return;
 		}
 
 		anim.SetBool(Walking, true);
-		anim.SetBool(Attacking, false);
 		
 		transform.LookAt(playerTransform);
 		
 		dir.Normalize();
-		rb.MovePosition(transform.position + dir * Time.deltaTime * 4f);
+		rb.MovePosition(transform.position + dir * (Time.deltaTime * movementSpeed));
 	}
 
 	public void TakeDamage(int amount, Vector3 hitForce)
 	{
-		Debug.Log("Ouch!");
+		Debug.Log($"{name} took {amount} damage");
+		anim.Play("Attacking");
 		health -= amount;
 		if (health <= 0)
 		{
+			Debug.Log($"{name} died");
 			Dead = true;
+			rb.constraints = RigidbodyConstraints.None;
 			rb.AddForce(hitForce);
 		}
 	}
@@ -75,23 +79,15 @@ public class Enemy : MonoBehaviour
 		isAttacking = true;
 		while (isAttacking)
 		{
+			anim.Play("Attack");
 			Attack();
-			yield return new WaitForSeconds(0.5f);
+			yield return new WaitForSeconds(1f);
 		}
 	}
 
 	private void Attack()
 	{
 		GetPlayer().TakeDamage();
-	}
-	
-	private void FollowTargetWithRotation(Transform target, float distanceToStop, float speed)
-	{
-		if(Vector3.Distance(transform.position, target.position) > distanceToStop)
-		{
-			transform.LookAt(target);
-			rb.AddRelativeForce(Vector3.forward * speed, ForceMode.Force);
-		}
 	}
 
 	private PlayerInstance GetPlayer()
