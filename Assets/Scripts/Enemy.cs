@@ -11,6 +11,8 @@ public class Enemy : MonoBehaviour
 	private float movementSpeed = 2.5f;
 	private bool isAttacking;
 
+	public ParticleSystem deathPs;
+
 	private static readonly int Walking = Animator.StringToHash("Walking");
 	
 	public bool Dead { get; set; }
@@ -83,7 +85,13 @@ public class Enemy : MonoBehaviour
 	{
 		gameObject.layer = LayerMask.NameToLayer("DontCollideWithEntities");
 		yield return new WaitForSeconds(1f);
-		// TODO: Despawn animation
+		if (deathPs != null)
+		{
+			var ps = Instantiate(deathPs, transform.position, Quaternion.identity);
+			ps.Play(true);
+			yield return new WaitForSeconds(ps.main.duration);
+		}
+		Destroy(gameObject);
 	}
 
 	private IEnumerator AttackRoutine()
