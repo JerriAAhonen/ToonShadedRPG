@@ -14,7 +14,7 @@ public class PlayerAnimations : SingletonBehaviour<PlayerAnimations>
 	private static readonly int Walking = Animator.StringToHash("Walking");
 	private static readonly int Running = Animator.StringToHash("Running");
 
-	public float AttackAnimationLenght => attackAnimationClip.length;
+	public float AttackAnimationLenght => 0.3f;
 
 	private void Start()
 	{
