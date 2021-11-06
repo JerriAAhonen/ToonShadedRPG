@@ -338,7 +338,7 @@ MonoBehaviour:
   sprintSpeed: 20
   jumpForce: 4
   gravity: -8.15
-  turnSmoothTime: 0.1
+  turnSmoothTime: 0.05
 --- !u!95 &2781131994538247866
 Animator:
   serializedVersion: 3
@@ -370,7 +370,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc19062fec8beec4bbdbdde15453c545, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackAnimationClip: {fileID: 7400000, guid: 8048b118dfd4d2944915d16375ae7374, type: 2}
   weapon: {fileID: 5080181045839095421}
 --- !u!114 &6295909912911043410
 MonoBehaviour:
