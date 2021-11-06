@@ -7,6 +7,7 @@ public class Enemy : MonoBehaviour
 {
 	private Rigidbody rb;
 	private Animator anim;
+	private Collider mainCollider;
 	private int maxHealth = 100;
 	private int health;
 	private float movementSpeed = 2.5f;
@@ -20,6 +21,7 @@ public class Enemy : MonoBehaviour
 	{
 		rb = GetComponent<Rigidbody>();
 		anim = GetComponent<Animator>();
+		mainCollider = GetComponent<Collider>();
 		Dead = false;
 		health = maxHealth;
 		rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
@@ -62,6 +64,9 @@ public class Enemy : MonoBehaviour
 
 	public void TakeDamage(int amount, Vector3 hitForce)
 	{
+		if (health <= 0)
+			return;
+		
 		Debug.Log($"{name} took {amount} damage");
 		anim.Play("Attacking");
 		health -= amount;
@@ -72,7 +77,15 @@ public class Enemy : MonoBehaviour
 			anim.enabled = false;
 			rb.constraints = RigidbodyConstraints.None;
 			rb.AddForce(hitForce);
+			StartCoroutine(DeathRoutine());
 		}
+	}
+
+	private IEnumerator DeathRoutine()
+	{
+		gameObject.layer = LayerMask.NameToLayer("DontCollideWithEntities");
+		yield return new WaitForSeconds(1f);
+		// TODO: Despawn animation
 	}
 
 	private IEnumerator AttackRoutine()
