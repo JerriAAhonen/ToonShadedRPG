@@ -19,5 +19,20 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs: []
-    m_Floats: []
-    m_Colors: []
+    m_Floats:
+    - _AmbientStrength: 0.5
+    - _BladeCurve: 2
+    - _BladeForward: 0.01
+    - _GrassHeight: 1.25
+    - _GrassWidth: 0.04
+    - _MaxDist: 60
+    - _MinDist: 40
+    - _Rad: 0.6
+    - _Radius: 1.41
+    - _RandomHeight: 2.74
+    - _Strength: 0.35
+    - _WindSpeed: 63.8
+    - _WindStrength: 0.015
+    m_Colors:
+    - _BottomColor: {r: 0, g: 1, b: 0, a: 1}
+    - _TopColor: {r: 1, g: 1, b: 0, a: 1}
