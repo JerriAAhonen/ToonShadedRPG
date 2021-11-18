@@ -338,7 +338,7 @@ MonoBehaviour:
   sprintSpeed: 20
   jumpForce: 4
   gravity: -8.15
-  turnSmoothTime: 0.05
+  turnSmoothTime: 0.03
 --- !u!95 &2781131994538247866
 Animator:
   serializedVersion: 3

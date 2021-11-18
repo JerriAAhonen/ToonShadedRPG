@@ -208,9 +208,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetTransform: {fileID: 0}
   camTransform: {fileID: 8602479368369149040}
+  camTargetPivotTransform: {fileID: 0}
   camPivotTransform: {fileID: 8602479367350706652}
   lookSpeed: 0.1
-  followSpeed: 0.1
+  followSpeed: 0.3
   pivotSpeed: 0.03
   minPivot: -50
   maxPivot: 50

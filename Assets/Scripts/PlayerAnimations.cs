@@ -7,6 +7,7 @@ public class PlayerAnimations : SingletonBehaviour<PlayerAnimations>
 	public Weapon weapon;
 	private PlayerMovement pm;
 	private Animator anim;
+	private Coroutine attackRoutine;
 	
 	private static readonly int Walking = Animator.StringToHash("Walking");
 	private static readonly int Running = Animator.StringToHash("Running");
@@ -46,8 +47,6 @@ public class PlayerAnimations : SingletonBehaviour<PlayerAnimations>
 		anim.SetBool(Running, true);
 		anim.Play("Run");
 	}
-
-	private Coroutine attackRoutine;
 	
 	private void OnAttack()
 	{

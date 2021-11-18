@@ -8,6 +8,7 @@ public class CameraController : SingletonBehaviour<CameraController>
 {
     public Transform targetTransform;
     public Transform camTransform;
+    public Transform camTargetPivotTransform;
     public Transform camPivotTransform;
     
     public float lookSpeed = 0.1f;
@@ -37,6 +38,11 @@ public class CameraController : SingletonBehaviour<CameraController>
         ignoreLayers = ~(1 << 8 | 1 << 9 | 1 << 10);
     }
 
+    private void Start()
+    {
+        camPivotTransform.position = camTargetPivotTransform.position;
+    }
+
     private void Update()
     {
         var delta = Time.deltaTime;
@@ -57,8 +63,8 @@ public class CameraController : SingletonBehaviour<CameraController>
 
     private void HandleCameraRotation(float delta, float mouseX, float mouseY)
     {
-        lookAngle += (mouseX * lookSpeed) / delta;
-        pivotAngle -= (mouseY * lookSpeed) / delta;
+        lookAngle += mouseX * (lookSpeed / 10) / delta;
+        pivotAngle -= mouseY * (lookSpeed / 10) / delta;
         pivotAngle = Mathf.Clamp(pivotAngle, minPivot, maxPivot);
 
         var rotation = Vector3.zero;
