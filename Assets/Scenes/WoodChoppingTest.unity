@@ -1737,8 +1737,23 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 3897638777907723187, guid: dacf555edd2b449c6854f31338c18366,
         type: 3}
+      propertyPath: buildingModeReachDistance
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 3897638777907723187, guid: dacf555edd2b449c6854f31338c18366,
+        type: 3}
       propertyPath: ignoreInBuildingMode.m_Bits
       value: 2304
+      objectReference: {fileID: 0}
+    - target: {fileID: 3897638777907723187, guid: dacf555edd2b449c6854f31338c18366,
+        type: 3}
+      propertyPath: interactionModeReachDistance
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3897638777907723187, guid: dacf555edd2b449c6854f31338c18366,
+        type: 3}
+      propertyPath: ignoreInInteractionMode.m_Bits
+      value: 256
       objectReference: {fileID: 0}
     - target: {fileID: 8602479368811432019, guid: dacf555edd2b449c6854f31338c18366,
         type: 3}
