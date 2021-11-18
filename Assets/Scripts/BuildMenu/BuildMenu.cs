@@ -47,8 +47,9 @@ public class BuildMenu : SingletonBehaviour<BuildMenu>
 		if (previewStructure == null)
 			return;
 		
-		var (raycastHit, _) = CameraRaycaster.Instance.BuildPos;
-		previewStructure.transform.position = CalculateDefaultSnapPointPlacement(previewStructure, raycastHit.point);
+		var hit = CameraRaycaster.Instance.LookPos;
+		if (hit.HasValue)
+			previewStructure.transform.position = CalculateDefaultSnapPointPlacement(previewStructure, hit.Value.point);
 	}
 
 	private void HandleRotation()

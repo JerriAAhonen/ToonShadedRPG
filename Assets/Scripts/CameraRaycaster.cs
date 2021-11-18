@@ -6,14 +6,16 @@ using Util;
 
 public class CameraRaycaster : SingletonBehaviour<CameraRaycaster>
 {
-	public LayerMask ignoreInBuildingMode;
+	[SerializeField] private LayerMask ignoreInBuildingMode;
+	[SerializeField] private LayerMask ignoreInInteractionMode;
+	[SerializeField] private float buildingModeReachDistance;
+	[SerializeField] private float interactionModeReachDistance;
 
 	private bool tooltipActive;
-	private float reachDistance = 10f;
 
 	private Interactable targetedInteractable;
 	
-	public (RaycastHit hit, BuildMenuStructure structure) BuildPos { get; private set; }
+	public RaycastHit? LookPos { get; private set; }
 
 	private void Update()
 	{
@@ -23,54 +25,51 @@ public class CameraRaycaster : SingletonBehaviour<CameraRaycaster>
 		//-- BUILD MODE
 		if (InputHandler.Instance.InBuildingMode)
 		{
-			if (Physics.Raycast(ray, out var hit, 30f, ~ignoreInBuildingMode))
+			if (Physics.Raycast(ray, out var hit, buildingModeReachDistance, ~ignoreInBuildingMode))
 			{
-				if (hit.transform.gameObject.layer == LayerMask.NameToLayer("PlayerBuiltStructure"))
-				{
-					var structure = hit.collider.GetComponent<BuildMenuStructure>();
-					if (structure != null)
-						BuildPos = (hit, structure);
-				}
-				else
-					BuildPos = (hit, null);
+				LookPos = hit;
 			}
 		}
 		//----------------------
 		//-- INTERACTION
 		else
 		{
-			if (Physics.Raycast(ray, out var hit, reachDistance))
+			if (Physics.Raycast(ray, out var hit, interactionModeReachDistance, ~ignoreInInteractionMode))
 			{
-				var interactable = hit.collider.GetComponent<Interactable>();
-				if (interactable != null)
-				{
-					CrosshairTooltips.Instance.ShowTargetDisplayName(interactable.DisplayName, interactable.CanInteract, interactable.InteractionText);
-					tooltipActive = true;
-
-					targetedInteractable = interactable;
-				}
-				else 
-					targetedInteractable = null;
+				LookPos = hit;
 			}
-			else if (tooltipActive)
-			{ 
+			else
+			{
+				LookPos = null;
 				CrosshairTooltips.Instance.Hide(); 
-				tooltipActive = false;
-				targetedInteractable = null;
 			}
 		}
 	}
-
-	private void TryInteract()
+	
+	/*if (Physics.Raycast(ray, out var hit, reachDistance, ~ignoreInInteractionMode))
 	{
-		if (targetedInteractable == null)
-			return;
-		
-		targetedInteractable.Interact();
+		var interactable = hit.collider.GetComponent<Interactable>();
+		if (interactable != null)
+		{
+			CrosshairTooltips.Instance.ShowTargetDisplayName(interactable.DisplayName, interactable.CanInteract, interactable.InteractionText);
+			tooltipActive = true;
+
+			targetedInteractable = interactable;
+		}
+		else 
+			targetedInteractable = null;
 	}
+	else if (tooltipActive)
+	{ 
+		CrosshairTooltips.Instance.Hide(); 
+		tooltipActive = false;
+		targetedInteractable = null;
+	}*/
+
+	
 
 	private void OnDrawGizmos()
 	{
-		Gizmos.DrawRay(transform.position, transform.forward * reachDistance);
+		Gizmos.DrawRay(transform.position, transform.forward * interactionModeReachDistance);
 	}
 }
