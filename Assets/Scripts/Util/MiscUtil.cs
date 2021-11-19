@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Util
@@ -22,6 +23,20 @@ namespace Util
                 var y = Random.Range(-1f, 1f);
                 return new Vector2(x, y);
             }
+        }
+
+        public static Interactable GetClosestInteractable(Vector3 pos, IEnumerable<Interactable> candidates)
+        {
+            float dist = 0f;
+            Interactable closest = null;
+            foreach (var candidate in candidates)
+            {
+                var distance = Vector3.Distance(pos, candidate.transform.position);
+                if (distance < dist || closest == null)
+                    closest = candidate;
+            }
+
+            return closest;
         }
     }
 }
