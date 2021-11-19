@@ -11,10 +11,6 @@ public class CameraRaycaster : SingletonBehaviour<CameraRaycaster>
 	[SerializeField] private float buildingModeReachDistance;
 	[SerializeField] private float interactionModeReachDistance;
 
-	private bool tooltipActive;
-
-	private Interactable targetedInteractable;
-	
 	public RaycastHit? LookPos { get; private set; }
 
 	private void Update()
@@ -46,28 +42,6 @@ public class CameraRaycaster : SingletonBehaviour<CameraRaycaster>
 		}
 	}
 	
-	/*if (Physics.Raycast(ray, out var hit, reachDistance, ~ignoreInInteractionMode))
-	{
-		var interactable = hit.collider.GetComponent<Interactable>();
-		if (interactable != null)
-		{
-			CrosshairTooltips.Instance.ShowTargetDisplayName(interactable.DisplayName, interactable.CanInteract, interactable.InteractionText);
-			tooltipActive = true;
-
-			targetedInteractable = interactable;
-		}
-		else 
-			targetedInteractable = null;
-	}
-	else if (tooltipActive)
-	{ 
-		CrosshairTooltips.Instance.Hide(); 
-		tooltipActive = false;
-		targetedInteractable = null;
-	}*/
-
-	
-
 	private void OnDrawGizmos()
 	{
 		Gizmos.DrawRay(transform.position, transform.forward * interactionModeReachDistance);
