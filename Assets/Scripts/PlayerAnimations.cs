@@ -5,8 +5,8 @@ using Util;
 public class PlayerAnimations : SingletonBehaviour<PlayerAnimations>
 {
 	public Weapon weapon;
+	public Animator anim;
 	private PlayerMovement pm;
-	private Animator anim;
 	private Coroutine attackRoutine;
 	
 	private static readonly int Walking = Animator.StringToHash("Walking");
@@ -17,7 +17,6 @@ public class PlayerAnimations : SingletonBehaviour<PlayerAnimations>
 	private void Start()
 	{
 		pm = GetComponent<PlayerMovement>();
-		anim = GetComponent<Animator>();
 
 		pm.BecameIdle += OnBecameIdle;
 		pm.StartedWalking += OnStartedWalking;
