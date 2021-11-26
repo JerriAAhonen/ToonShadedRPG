@@ -1,13 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
     private List<Collider> hitColliders = new List<Collider>();
-    
-    public float hitForce;
-    public Collider col;
-    public ParticleSystem hitEffect;
+
+    [SerializeField] private Transform parent;
+    [SerializeField] private Vector3 posOffset;
+    [SerializeField] private float hitForce;
+    [SerializeField] private Collider col;
+    [SerializeField] private ParticleSystem hitEffect;
 
     public bool ColliderEnabled
     {
@@ -18,6 +21,12 @@ public class Weapon : MonoBehaviour
             if (!value)
                 hitColliders.Clear();
         }
+    }
+
+    private void Update()
+    {
+        transform.position = parent.transform.position + posOffset;
+        transform.rotation = parent.transform.rotation;
     }
 
     private void OnTriggerEnter(Collider other)
