@@ -10,19 +10,15 @@ public class PlayerMovement : MonoBehaviour
 	public float turnSmoothTime = 0.1f;
 
 	private CharacterController cc;
+	private PlayerAnimationHandler pah;
 	private Transform cam;
 	private float smoothVel;
 	private float verticalVel;
-	private PlayerMovementState movState;
-	
-	public event Action BecameIdle;
-	public event Action StartedWalking;
-	public event Action StartedRunning;
-	public event Action Jumped;
-	
+
 	private void Awake()
 	{
 		cc = GetComponent<CharacterController>();
+		pah = GetComponent<PlayerAnimationHandler>();
 		if (Camera.main != null)
 			cam = Camera.main.transform;
 		else
@@ -51,7 +47,6 @@ public class PlayerMovement : MonoBehaviour
 		if (jump && cc.isGrounded)
 		{
 			verticalVel = jumpForce * Time.deltaTime;
-			Jumped?.Invoke();
 		}
 		
 		var moveDir = new Vector3(0f, verticalVel, 0f);
@@ -83,40 +78,16 @@ public class PlayerMovement : MonoBehaviour
 			// Get the move dir from the direction the camera is looking at
 			moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
 			moveDir.y += verticalVel;
+		}
 
-			var oldState = movState;
-			movState = sprint ? PlayerMovementState.Running : PlayerMovementState.Walking;
-			if (oldState != movState)
-				InvokeStateChange(movState);
-		}
-		else
-		{
-			var oldState = movState;
-			movState = PlayerMovementState.Idle;
-			if (oldState != movState)
-				InvokeStateChange(movState);
-		}
+		var moveAmount = Mathf.Clamp01(Mathf.Abs(moveDir.x) + Mathf.Abs(moveDir.z));
+		if (Math.Abs(moveAmount - 1) < Mathf.Epsilon)
+			moveAmount = sprint ? 1 : 0.5f;
+
+		pah.UpdateAnimatorValues(moveAmount);
 
 		var moveSpeed = sprint ? sprintSpeed : speed;
 		cc.Move(moveDir * (moveSpeed * Time.deltaTime));
-	}
-
-	private void InvokeStateChange(PlayerMovementState newState)
-	{
-		switch (newState)
-		{
-			case PlayerMovementState.Idle:
-				BecameIdle?.Invoke();
-				break;
-			case PlayerMovementState.Walking:
-				StartedWalking?.Invoke();
-				break;
-			case PlayerMovementState.Running:
-				StartedRunning?.Invoke();
-				break;
-			default:
-				throw new ArgumentOutOfRangeException(nameof(newState), newState, null);
-		}
 	}
 
 	#region Types

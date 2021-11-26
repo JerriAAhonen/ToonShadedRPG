@@ -31,7 +31,7 @@ public class InputHandler : SingletonBehaviour<InputHandler>
 				Attack?.Invoke();
 				IsAttacking = true;
 				LeanTween.cancel(gameObject, false);
-				LeanTween.delayedCall(gameObject, PlayerAnimations.Instance.AttackAnimationLenght, () => IsAttacking = false);
+				LeanTween.delayedCall(gameObject, PlayerAnimationHandler.AttackAnimationLength, () => IsAttacking = false);
 			}
 		}
 
